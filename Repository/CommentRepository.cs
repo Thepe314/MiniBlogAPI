@@ -8,10 +8,10 @@ namespace MINIBLOGAPI.Repository
     public class CommentRepository :ICommentRepository
     {
         //readonly means only this class can access the AppDbContext.
-        private readonly AppDbContext _context;
+        private readonly ApplicationDbContext _context;
 
         //Making a constructor and inject ApplicationDbContext via Dependency Injection
-        public CommentRepository(AppDbContext context)
+        public CommentRepository(ApplicationDbContext context)
         {
             _context= context;
         }

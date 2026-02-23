@@ -4,7 +4,7 @@ using MINIBLOGAPI.Repository;
 namespace MINIBLOGAPI
 {
     [ApiController]
-    [Route("api/controller")]
+    [Route("api/[controller]")]
     
     public class PostController : ControllerBase
     {
@@ -41,26 +41,31 @@ namespace MINIBLOGAPI
     public async Task<IActionResult> Create(Post post)
         {
             await _postRepo.CreatePost(post);
-            return CreatedAtAction (nameof(GetById), new {id = post.PostId}, post);
+            return Ok("Post created successfully");
         }
+        
 
         //Update the Post
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, Post post)
-        {   
-            if(id !=post.PostId) return BadRequest("Cannot find id");
             {
-                await _postRepo.UpdatePost(post);
-                return NoContent();
+                if (id != post.PostId)
+            {
+                 return BadRequest("ID mismatch");
             }
-        }
+                
+                await _postRepo.UpdatePost(post);
+
+                //Return success message
+                return Ok(new { message = "Post updated successfully", postId = post.PostId });
+            }
 
         //Delete : api/post/id
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id )
         {
             await _postRepo.DeletePost(id);
-            return NoContent();
+            return Ok(new { message = "Post deleted successfully", id });
         }
 
        

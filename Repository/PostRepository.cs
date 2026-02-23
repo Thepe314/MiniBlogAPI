@@ -6,10 +6,10 @@ namespace MINIBLOGAPI.Repository
     public class PostRepository :IPostRepository
     {
         //readonly which means only this class can access the db
-        private readonly AppDbContext _context;
+        private readonly ApplicationDbContext _context;
         
         //Making a constructor and inject ApplicationDbContext via Dependency Injection
-        public PostRepository(AppDbContext context)
+        public PostRepository(ApplicationDbContext context)
         {
              _context = context;
 

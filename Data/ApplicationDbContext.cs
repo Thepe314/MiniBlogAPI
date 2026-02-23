@@ -4,10 +4,10 @@ using MINIBLOGAPI;
 namespace MINIBLOGAPI
 {
     
-public class AppDbContext : DbContext
+public class ApplicationDbContext : DbContext
 {
     
-    public AppDbContext(DbContextOptions options) : base(options)
+    public ApplicationDbContext(DbContextOptions options) : base(options)
     {
         
     }
