@@ -5,7 +5,7 @@ using MINIBLOGAPI.Repository;
 
 namespace MINIBLOGAPI.Controllers
 {
-    [ApiController]
+    [ApiController] 
     [Route("api/[controller]")]
     
     public class PostController : ControllerBase
@@ -26,6 +26,12 @@ namespace MINIBLOGAPI.Controllers
         public async Task<IActionResult> GetAll()
         {
              var posts = await _postRepo.GetAllPost();
+
+            //Select is a LINQ method that projects each element of a collection into a new form.
+            //Transforms each Post into PostResponseDTO
+            //p is a single Post from the posts collection.
+            //The => part is called a lambda expression: it defines how each Post should be mapped.
+            //So after Select, you have an IEnumerable<PostResponseDTO> instead of IEnumerable<Post>.
              var response = posts.Select(p => new PostResponseDTO
                 {
                     Title = p.Title,
