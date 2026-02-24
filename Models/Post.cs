@@ -1,5 +1,4 @@
 using System;
-
  namespace MINIBLOGAPI
 {
     public class Post
@@ -14,7 +13,7 @@ using System;
 
         public DateTime createdAt{get;set;} =DateTime.Now;
 
-        // public ICollection<Comment> Comments {get;set;} =new List<Comment>();
+        public ICollection<Comment> Comments {get;set;} =new List<Comment>();
         
     }
 }

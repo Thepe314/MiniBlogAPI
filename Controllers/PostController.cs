@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Mvc;
+using MINIBLOGAPI.Models;
 using MINIBLOGAPI.Repository;
 
-namespace MINIBLOGAPI
+namespace MINIBLOGAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -18,13 +20,27 @@ namespace MINIBLOGAPI
         }
 
 
-        //Get /api/posthttps://msdn.microsoft.com/query/roslyn.query?appId=roslyn&k=k(CS1061)
+        //Get /api/post
         //returns all post
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var post = await _postRepo.GetAllPost();
-            return Ok(post);
+             var posts = await _postRepo.GetAllPost();
+             var response = posts.Select(p => new PostResponseDTO
+                {
+                    Title = p.Title,
+                    Content = p.Content,
+                    createdAt = p.createdAt,
+                    Comments = p.Comments.Select(c => new CommentResponseDTO
+                    {
+                        commentID = c.commentID,
+                        contentComment = c.contentComment,
+                        author = c.author,
+                        createdAt = c.createdAt
+                    }).ToList()
+                });
+
+                return Ok(response);
         }
 
       //Get by id : api/post/5
@@ -38,8 +54,15 @@ namespace MINIBLOGAPI
 
     //Post : api/Post
     [HttpPost]
-    public async Task<IActionResult> Create(Post post)
+    public async Task<IActionResult> Create(PostCreateDto dto)
         {
+            //map DTO to Entity
+            var post = new Post
+            {
+                Title = dto.Title,
+                Content = dto.Content,
+            };
+
             await _postRepo.CreatePost(post);
             return Ok("Post created successfully");
         }
@@ -47,23 +70,28 @@ namespace MINIBLOGAPI
 
         //Update the Post
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Post post)
+        public async Task<IActionResult> Update(int id,PostCreateDto dto)
             {
-                if (id != post.PostId)
-            {
-                 return BadRequest("ID mismatch");
-            }
+                var existing = await _postRepo.GetbyId(id);
+                if(existing == null!) return BadRequest("Id mismatch");
                 
-                await _postRepo.UpdatePost(post);
+                existing.Content = dto.Content;
+                existing.Title = dto.Title;
+
+
+                await _postRepo.UpdatePost(existing);
 
                 //Return success message
-                return Ok(new { message = "Post updated successfully", postId = post.PostId });
+                return Ok("Post successfully updated");
             }
 
         //Delete : api/post/id
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id )
         {
+            var exisitng = await _postRepo.GetbyId(id);
+            if(exisitng == null!) return NotFound(new {message= "Post not found",id});
+
             await _postRepo.DeletePost(id);
             return Ok(new { message = "Post deleted successfully", id });
         }

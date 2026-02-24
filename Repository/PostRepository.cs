@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MINIBLOGAPI.Repository
 {
-    public class PostRepository :IPostRepository
+    public class PostRepository : IPostRepository
     {
         //readonly which means only this class can access the db
         private readonly ApplicationDbContext _context;
@@ -18,8 +18,12 @@ namespace MINIBLOGAPI.Repository
         //Get all Post
         public async Task<IEnumerable<Post>>GetAllPost()
         {
-            return await _context.Posts.ToListAsync();
+            return await _context.Posts
+            .Include(p => p.Comments)  // EF will load comments
+            .ToListAsync();
         }
+
+    
 
         //Get by id
         public async Task<Post?>GetbyId(int id)
@@ -39,7 +43,8 @@ namespace MINIBLOGAPI.Repository
         public async Task UpdatePost(Post post)
         {
             var existing = await _context.Posts.FindAsync(post.PostId);
-             if(existing == null) return;
+             if(existing == null) 
+             return;
 
              existing.Title = post.Title;
              existing.Content = post.Content;

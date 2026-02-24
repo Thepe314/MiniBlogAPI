@@ -1,6 +1,6 @@
 using System;
 
- namespace MINIBLOGAPI
+namespace MINIBLOGAPI
 {
     public class Comment
     {
